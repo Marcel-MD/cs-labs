@@ -6,10 +6,10 @@ import (
 )
 
 func caesarEncrypt(alphabet string, shift int, text string) string {
-	var result string
+	var result strings.Builder
 	for _, c := range text {
 		if c == ' ' {
-			result += " "
+			result.WriteByte(' ')
 			continue
 		}
 
@@ -18,9 +18,9 @@ func caesarEncrypt(alphabet string, shift int, text string) string {
 			panic("invalid character")
 		}
 
-		result += string(alphabet[(index+shift)%len(alphabet)])
+		result.WriteByte(alphabet[(index+shift)%len(alphabet)])
 	}
-	return result
+	return result.String()
 }
 
 func caesarDecrypt(alphabet string, shift int, text string) string {

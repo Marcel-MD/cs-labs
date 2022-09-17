@@ -35,6 +35,65 @@ Implement 4 types of the classical ciphers:
 
 ## Implementation description
 
-- About 2-3 sentences to explain each piece of the implementation.
+- Caesar cipher
+  Encryption and decryption functions take a few arguments: `alphabet`, `shift`, `text` and a `seed` for alphabet permutation. The logic is strait-forward we just loop through text's chars and replace them from alphabet with a shift to the right. We can also shuffle the alphabet before we do the encryption.
+
+  ```go
+  func caesarEncrypt(alphabet string, shift int, text string) string {
+      var result strings.Builder
+      for _, c := range text {
+          if c == ' ' {
+              result.WriteByte(' ')
+              continue
+          }
+
+          index := strings.Index(alphabet, string(c))
+          if index == -1 {
+              panic("invalid character")
+          }
+
+          result.WriteByte(alphabet[(index+shift)%len(alphabet)])
+      }
+      return result.String()
+  }
+
+  func caesarPermutationEncrypt(alphabet string, seed int64, shift int, text string) string {
+  	newAlphabet := permute(alphabet, seed)
+  	return caesarEncrypt(string(newAlphabet), shift, text)
+  }
+  ```
+
+- Vigenere cipher
+
+  Encryption and decryption functions take a few arguments: `alphabet`, `key` and `text`. We loop through text's chars, then we get the `index` of current char in the alphabet, then we calculate the char from the key that corresponds to that char from the text `k = key[i % len(key)]` then we get the `shift` which is the index of this char in the alphabet. Finally current char will be replaced with `alphabet[(index+shift) % len(alphabet)]`.
+
+  ```go
+  func vigenereEncrypt(alphabet string, key string, text string) string {
+  	var result strings.Builder
+  	for i, c := range text {
+  		if c == ' ' {
+  			result.WriteByte(' ')
+  			continue
+  		}
+
+  		index := strings.Index(alphabet, string(c))
+  		if index == -1 {
+  			panic("invalid character")
+  		}
+
+  		k := key[i%len(key)]
+  		shift := strings.Index(alphabet, string(k))
+  		if shift == -1 {
+  			panic("invalid character")
+  		}
+
+  		result.WriteByte(alphabet[(index+shift)%len(alphabet)])
+  	}
+  	return result.String()
+  }
+  ```
+
+- Playfair cipher
+  Too much to explain, just go read GeeksForGeeks.
 
 ## Conclusions
