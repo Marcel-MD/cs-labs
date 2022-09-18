@@ -35,7 +35,7 @@ Implement 4 types of the classical ciphers:
 
 ## Implementation description
 
-- Caesar cipher  
+- **Caesar cipher**  
   Encryption and decryption functions take a few arguments: `alphabet`, `shift`, `text` and a `seed` for alphabet permutation. The logic is strait-forward we just loop through text's chars and replace them from alphabet with a shift to the right. We can also shuffle the alphabet before we do the encryption.
 
   ```go
@@ -63,10 +63,9 @@ Implement 4 types of the classical ciphers:
   }
   ```
 
-- Vigenere cipher  
-
+- **Vigenere cipher**  
   Encryption and decryption functions take a few arguments: `alphabet`, `key` and `text`. We loop through text's chars, then we get the `index` of current char in the alphabet, then we calculate the char from the key that corresponds to that char from the text `k = key[i % len(key)]` then we calculate the `shift` which is the index of this char. Finally current char will be replaced with `alphabet[(index+shift) % len(alphabet)]`.
-
+  
   ```go
   func vigenereEncrypt(alphabet string, key string, text string) string {
   	var result strings.Builder
@@ -75,25 +74,27 @@ Implement 4 types of the classical ciphers:
   			result.WriteByte(' ')
   			continue
   		}
-
+  
   		index := strings.Index(alphabet, string(c))
   		if index == -1 {
   			panic("invalid character")
   		}
-
+  
   		k := key[i%len(key)]
   		shift := strings.Index(alphabet, string(k))
   		if shift == -1 {
   			panic("invalid character")
   		}
-
+  
   		result.WriteByte(alphabet[(index+shift)%len(alphabet)])
   	}
   	return result.String()
   }
   ```
-
-- Playfair cipher  
+  
+- **Playfair cipher**  
   Too much to explain, just go read GeeksForGeeks.
 
 ## Conclusions
+
+After performing this laboratory work I became familiar with classical ciphers. Back when they were used widely, they might been secure enough, but the advent of computers made them obsolete. Still it's interesting to see where it all started.
