@@ -2,6 +2,10 @@ package main
 
 import (
 	"fmt"
+
+	"github.com/Marcel-MD/cs-labs/caesar"
+	"github.com/Marcel-MD/cs-labs/playfair"
+	"github.com/Marcel-MD/cs-labs/vigenere"
 )
 
 func main() {
@@ -11,18 +15,18 @@ func main() {
 	var seed int64 = 10
 	text := "hello world"
 
-	encrypted := caesarPermutationEncrypt(alphabet, seed, shift, text)
+	encrypted := caesar.PermutationEncrypt(alphabet, seed, shift, text)
 	fmt.Printf("Caesar encrypted: %s\n", encrypted)
-	decrypted := caesarPermutationDecrypt(alphabet, seed, shift, encrypted)
+	decrypted := caesar.PermutationDecrypt(alphabet, seed, shift, encrypted)
 	fmt.Printf("Caesar decrypted: %s\n", decrypted)
 
-	encrypted = vigenereEncrypt(alphabet, key, text)
+	encrypted = vigenere.Encrypt(alphabet, key, text)
 	fmt.Printf("Vigenere encrypted: %s\n", encrypted)
-	decrypted = vigenereDecrypt(alphabet, key, encrypted)
+	decrypted = vigenere.Decrypt(alphabet, key, encrypted)
 	fmt.Printf("Vigenere decrypted: %s\n", decrypted)
 
-	encrypted = playfairEncrypt(key, text)
+	encrypted = playfair.Encrypt(key, text)
 	fmt.Printf("Playfair encrypted: %s\n", encrypted)
-	decrypted = playfairDecrypt(key, encrypted)
+	decrypted = playfair.Decrypt(key, encrypted)
 	fmt.Printf("Playfair decrypted: %s\n", decrypted)
 }

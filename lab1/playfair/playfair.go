@@ -1,10 +1,10 @@
-package main
+package playfair
 
 import (
 	"strings"
 )
 
-func playfairEncrypt(key string, text string) string {
+func Encrypt(key string, text string) string {
 	text = cleanText(text)
 	table := generateTable(key)
 
@@ -31,7 +31,7 @@ func playfairEncrypt(key string, text string) string {
 	return result.String()
 }
 
-func playfairDecrypt(key string, text string) string {
+func Decrypt(key string, text string) string {
 	table := generateTable(key)
 
 	var result strings.Builder

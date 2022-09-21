@@ -1,8 +1,8 @@
-package main
+package vigenere
 
 import "strings"
 
-func vigenereEncrypt(alphabet string, key string, text string) string {
+func Encrypt(alphabet string, key string, text string) string {
 	var result strings.Builder
 	for i, c := range text {
 		if c == ' ' {
@@ -26,7 +26,7 @@ func vigenereEncrypt(alphabet string, key string, text string) string {
 	return result.String()
 }
 
-func vigenereDecrypt(alphabet string, key string, text string) string {
+func Decrypt(alphabet string, key string, text string) string {
 	var result strings.Builder
 	for i, c := range text {
 		if c == ' ' {

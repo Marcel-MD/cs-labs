@@ -1,11 +1,11 @@
-package main
+package caesar
 
 import (
 	"math/rand"
 	"strings"
 )
 
-func caesarEncrypt(alphabet string, shift int, text string) string {
+func Encrypt(alphabet string, shift int, text string) string {
 	var result strings.Builder
 	for _, c := range text {
 		if c == ' ' {
@@ -23,22 +23,22 @@ func caesarEncrypt(alphabet string, shift int, text string) string {
 	return result.String()
 }
 
-func caesarDecrypt(alphabet string, shift int, text string) string {
-	return caesarEncrypt(alphabet, len(alphabet)-shift, text)
+func Decrypt(alphabet string, shift int, text string) string {
+	return Encrypt(alphabet, len(alphabet)-shift, text)
 }
 
-func caesarPermutationEncrypt(alphabet string, seed int64, shift int, text string) string {
+func PermutationEncrypt(alphabet string, seed int64, shift int, text string) string {
 
 	newAlphabet := permute(alphabet, seed)
 
-	return caesarEncrypt(string(newAlphabet), shift, text)
+	return Encrypt(string(newAlphabet), shift, text)
 }
 
-func caesarPermutationDecrypt(alphabet string, seed int64, shift int, text string) string {
+func PermutationDecrypt(alphabet string, seed int64, shift int, text string) string {
 
 	newAlphabet := permute(alphabet, seed)
 
-	return caesarDecrypt(string(newAlphabet), shift, text)
+	return Decrypt(string(newAlphabet), shift, text)
 }
 
 func permute(alphabet string, seed int64) string {
