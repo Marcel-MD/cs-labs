@@ -6,7 +6,7 @@
 
 ---
 
-## Theory
+## Overview
 
 &ensp;&ensp;&ensp; Caesar cipher has a key which is used to substitute the characters with the next ones, by the order number in a pre-established alphabet. Mathematically it would be expressed as follows:
 
@@ -24,7 +24,7 @@ where:
 
 &ensp;&ensp;&ensp; Judging by the encryption mechanism one can conclude that this cipher is pretty easy to break. In fact, a brute force attack would have **_O(nm)_** complexity, where **_n_** would be the size of the alphabet and **_m_** the size of the message. This is why there were other variations of this cipher, which are supposed to make the cryptanalysis more complex.
 
-## Objectives:
+## Objectives
 
 Implement 4 types of the classical ciphers:
 
@@ -46,21 +46,21 @@ Implement 4 types of the classical ciphers:
         result.WriteByte(' ')
         continue
       }
-  
+
       index := strings.Index(alphabet, string(c))
       if index == -1 {
         panic("invalid character")
       }
-  
+
       result.WriteByte(alphabet[(index+shift)%len(alphabet)])
     }
     return result.String()
   }
-  
+
   func PermutationEncrypt(alphabet string, seed int64, shift int, text string) string {
-  
+
     newAlphabet := permute(alphabet, seed)
-  
+
     return Encrypt(string(newAlphabet), shift, text)
   }
   ```
@@ -76,18 +76,18 @@ Implement 4 types of the classical ciphers:
         result.WriteByte(' ')
         continue
       }
-  
+
       index := strings.Index(alphabet, string(c))
       if index == -1 {
         panic("invalid character")
       }
-  
+
       k := key[i%len(key)]
       shift := strings.Index(alphabet, string(k))
       if shift == -1 {
         panic("invalid character")
       }
-  
+
       result.WriteByte(alphabet[(index+shift)%len(alphabet)])
     }
     return result.String()
@@ -101,15 +101,15 @@ Implement 4 types of the classical ciphers:
   func Encrypt(key string, text string) string {
     text = cleanText(text)
     table := generateTable(key)
-  
+
     var result strings.Builder
     for i := 0; i < len(text); i += 2 {
       c1 := text[i]
       c2 := text[i+1]
-  
+
       i1, j1 := search(table, c1)
       i2, j2 := search(table, c2)
-  
+
       if i1 == i2 {
         result.WriteByte(table[i1][(j1+1)%5])
         result.WriteByte(table[i2][(j2+1)%5])
@@ -121,21 +121,15 @@ Implement 4 types of the classical ciphers:
         result.WriteByte(table[i2][j1])
       }
     }
-  
+
     return result.String()
   }
   ```
 
-## Output
+## Run tests
 
 ```sh
-$ go run .
-Caesar encrypted: jsccb mbicg
-Caesar decrypted: hello world
-Vigenere encrypted: zincs ostch
-Vigenere decrypted: hello world
-Playfair encrypted: iskyiqewfqkc
-Playfair decrypted: helxloworldx
+$ go test ./...
 ```
 
 ## Conclusions
