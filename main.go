@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/Marcel-MD/cs-labs/sequential-block/rc4"
+	"github.com/Marcel-MD/cs-labs/stream-block/rc4"
 )
 
 func main() {
