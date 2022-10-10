@@ -54,15 +54,15 @@ RC4 is a stream cipher and variable-length key algorithm. This algorithm encrypt
 
 2. While generating keystream:
 
-   1. Update i = (i + 1) mod 256.
+   1. Update `i = (i + 1) mod 256`.
 
-   2. Update j = (j + S[i]) mod 256.
+   2. Update `j = (j + S[i]) mod 256`.
 
-   3. Swap S[i] and S[j].
+   3. Swap `S[i]` and `S[j]`.
 
-   4. Generate keystream byte K = S[(S[i] + S[j]) mod 256].
+   4. Generate keystream byte `K = S[(S[i] + S[j]) mod 256]`.
 
-   5. Encrypt the plaintext byte P with the keystream byte K using X-OR operation.
+   5. Encrypt the plaintext byte with the keystream byte `K` using X-OR operation.
 
 ```go
 	for k, v := range src {
