@@ -29,7 +29,7 @@
 
 2. Implement an example of a stream cipher RC4.
 
-3. Implement an example of a block cipher.
+3. Implement an example of a block cipher DES.
 
 ## Implementation description
 
