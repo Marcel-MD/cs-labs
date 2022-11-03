@@ -1,7 +1,7 @@
 # Topic: Asymmetric Ciphers.
 
 ### Course: Cryptography & Security
-### Author: Vasile Drumea
+### Author: Marcel Vlasenco
 
 ----
 
@@ -61,7 +61,19 @@ RSA is an asymmetric cipher that uses the fact that it is easy to find the prime
 
 4. Choose an integer `e` such that `1 < e < phi(n)` and `gcd(e, phi(n)) = 1`. This is the public key.
 ```go
-    e := new(big.Int).SetInt64(3)
+    e := randE(r, phi)
+	
+	[...]
+
+	func randE(r io.Reader, phi *big.Int) *big.Int {
+		e, _ := rand.Int(r, phi)
+		for {
+			if new(big.Int).GCD(nil, nil, e, phi).Cmp(big.NewInt(1)) == 0 {
+				return e
+			}
+			e, _ = rand.Int(r, phi)
+		}
+	}
 ```
 
 5. Compute `d` such that `d * e = 1 mod phi(n)`. This is the private key.
