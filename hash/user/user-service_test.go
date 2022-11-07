@@ -1,6 +1,8 @@
-package passwords
+package user
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestLoginRegister(t *testing.T) {
 
@@ -18,13 +20,13 @@ func TestLoginRegister(t *testing.T) {
 		t.Fatalf("Expected Register to return nil but got %v", err)
 	}
 
-	hashPassword, err := db.Get(email)
+	user, err := db.Get(email)
 	if err != nil {
 		t.Fatalf("Expected user to be registered but got error %v", err)
 	}
 
-	if string(hashPassword) == password {
-		t.Fatalf("Expected password to be hashed but got %s", hashPassword)
+	if string(user.Password) == password {
+		t.Fatalf("Expected password to be hashed but got %s", user.Password)
 	}
 
 	err = us.Login(email, password)

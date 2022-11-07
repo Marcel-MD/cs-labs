@@ -1,32 +1,32 @@
-package passwords
+package user
 
 import (
 	"errors"
 )
 
 type Database interface {
-	Get(key string) ([]byte, error)
-	Set(key string, value []byte) error
+	Get(key string) (User, error)
+	Set(key string, value User) error
 	Delete(key string) error
 }
 
 type inMemoryDatabase struct {
-	data map[string][]byte
+	data map[string]User
 }
 
 func NewInMemoryDatabase() Database {
-	return &inMemoryDatabase{data: make(map[string][]byte)}
+	return &inMemoryDatabase{data: make(map[string]User)}
 }
 
-func (s *inMemoryDatabase) Get(key string) ([]byte, error) {
+func (s *inMemoryDatabase) Get(key string) (User, error) {
 	if value, ok := s.data[key]; ok {
 		return value, nil
 	}
 
-	return nil, errors.New("key not found")
+	return User{}, errors.New("key not found")
 }
 
-func (s *inMemoryDatabase) Set(key string, value []byte) error {
+func (s *inMemoryDatabase) Set(key string, value User) error {
 	s.data[key] = value
 	return nil
 }
