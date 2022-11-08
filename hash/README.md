@@ -40,8 +40,81 @@
    
 ## Implementation Description:
 
-[...]
+&ensp;&ensp;&ensp; The laboratory implementation is separated in two packages `user` and `message`. In `user` package we have an in-memory-database that will store the users. The `User` struct contains the user email, password and private key. The password is stored as a byte array, because it is the output of the hashing algorithm. The private key is used to decrypt the digital signature.
+
+```go
+type User struct {
+	Email      string
+	Password   []byte
+	PrivateKey *rsa.PrivateKey
+}
+```
+
+&ensp;&ensp;&ensp; `UserService` has the methods for registering a new user and logging in. The `Register` method will generate a new private key for the user and store it in the database. The `Login` method will check if the user exists in the database and if the password is correct.
+
+```go
+func (s *userService) Register(email, password string) error {
+
+	_, err := s.db.Get(email)
+	if err == nil {
+		return errors.New("user already exists")
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	privKey, err := rsa.GenerateKey(rand.Reader, 1028)
+	if err != nil {
+		return err
+	}
+
+	user := User{
+		Email:      email,
+		Password:   hashedPassword,
+		PrivateKey: privKey,
+	}
+
+	return s.db.Set(email, user)
+}
+
+func (s *userService) Login(email, password string) error {
+	user, err := s.db.Get(email)
+	if err != nil {
+		return err
+	}
+
+	return bcrypt.CompareHashAndPassword(user.Password, []byte(password))
+}
+```
+
+&ensp;&ensp;&ensp; The `message` package contains the `MessageService`. It has the methods for signing a message and verifying the signature. The hashing algorithm used is SHA256. The `SignMessage` method will hash the message, encrypt it with the user private key and return the signature. The `VerifyMessage` method will decrypt the signature with the user public key, hash the message and compare the two hashes.
+
+```go
+func (s *messageService) SignMessage(privateKey *rsa.PrivateKey, msg []byte) ([]byte, []byte, error) {
+
+	msgHash := sha256.New()
+	_, err := msgHash.Write(msg)
+	if err != nil {
+		return nil, nil, err
+	}
+	msgHashSum := msgHash.Sum(nil)
+
+	signature, err := rsa.SignPSS(rand.Reader, privateKey, crypto.SHA256, msgHashSum, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return signature, msgHashSum, nil
+}
+
+func (s *messageService) VerifyMessage(publicKey *rsa.PublicKey, signature []byte, msgHashSum []byte) error {
+
+	return rsa.VerifyPSS(publicKey, crypto.SHA256, msgHashSum, signature, nil)
+}
+```
 
 ## Conclusion:
 
-[...]
+&ensp;&ensp;&ensp; Hashing is a very useful technique that can be used to store passwords, check for integrity and create digital signatures. The hashing algorithms are very fast and can be used to check for integrity of large files. The digital signature process is very useful for non-repudiation and integrity. The digital signature can be used to verify the authenticity of a message and to check if it was modified.
