@@ -2,6 +2,10 @@ package api
 
 import (
 	"github.com/Marcel-MD/cs-labs/api/dto"
+	"github.com/Marcel-MD/cs-labs/api/middleware"
+	"github.com/Marcel-MD/cs-labs/classic/caesar"
+	"github.com/Marcel-MD/cs-labs/classic/playfair"
+	"github.com/Marcel-MD/cs-labs/classic/vigenere"
 	"github.com/gin-gonic/gin"
 )
 
@@ -63,6 +67,100 @@ func ListenAndServe() error {
 		}
 
 		c.JSON(200, gin.H{"token": jwt})
+	})
+
+	j := g.Use(middleware.JwtAuth())
+
+	j.POST("/caesar/encrypt", func(c *gin.Context) {
+		var dto dto.Caesar
+
+		if err := c.ShouldBindJSON(&dto); err != nil {
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		cypher := caesar.Encrypt(dto.Alphabet, dto.Shift, dto.Text)
+
+		dto.Text = cypher
+
+		c.JSON(200, dto)
+	})
+
+	j.POST("/caesar/decrypt", func(c *gin.Context) {
+		var dto dto.Caesar
+
+		if err := c.ShouldBindJSON(&dto); err != nil {
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		plain := caesar.Decrypt(dto.Alphabet, dto.Shift, dto.Text)
+
+		dto.Text = plain
+
+		c.JSON(200, dto)
+	})
+
+	j.POST("/playfair/encrypt", func(c *gin.Context) {
+		var dto dto.Playfair
+
+		if err := c.ShouldBindJSON(&dto); err != nil {
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		cypher := playfair.Encrypt(dto.Key, dto.Text)
+
+		dto.Text = cypher
+
+		c.JSON(200, dto)
+	})
+
+	j.POST("/playfair/decrypt", func(c *gin.Context) {
+		var dto dto.Playfair
+
+		if err := c.ShouldBindJSON(&dto); err != nil {
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		plain := playfair.Decrypt(dto.Key, dto.Text)
+
+		dto.Text = plain
+
+		c.JSON(200, dto)
+	})
+
+	a := j.Use(middleware.HasRole(RoleAdmin))
+
+	a.POST("/vigenere/encrypt", func(c *gin.Context) {
+		var dto dto.Vigenere
+
+		if err := c.ShouldBindJSON(&dto); err != nil {
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		cypher := vigenere.Encrypt(dto.Alphabet, dto.Key, dto.Text)
+
+		dto.Text = cypher
+
+		c.JSON(200, dto)
+	})
+
+	a.POST("/vigenere/decrypt", func(c *gin.Context) {
+		var dto dto.Vigenere
+
+		if err := c.ShouldBindJSON(&dto); err != nil {
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		plain := vigenere.Decrypt(dto.Alphabet, dto.Key, dto.Text)
+
+		dto.Text = plain
+
+		c.JSON(200, dto)
 	})
 
 	return e.Run(":8080")
