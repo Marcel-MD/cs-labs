@@ -11,7 +11,7 @@ func JwtAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		email, role, err := token.ExtractEmailRole(c)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			c.Abort()
 			return
 		}
