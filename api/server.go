@@ -10,9 +10,12 @@ import (
 	"github.com/Marcel-MD/cs-labs/classic/playfair"
 	"github.com/Marcel-MD/cs-labs/classic/vigenere"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func ListenAndServe() error {
+	godotenv.Load()
+
 	s := NewUserService()
 	otp := mfa.NewOtpService()
 	es := mfa.NewMailService()
@@ -69,6 +72,11 @@ func ListenAndServe() error {
 			return
 		}
 
+		if err := otp.Verify(dto.Email, dto.Otp); err != nil {
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
 		if err := s.Register(dto); err != nil {
 			c.JSON(400, gin.H{"error": err.Error()})
 			return
@@ -81,6 +89,11 @@ func ListenAndServe() error {
 		var dto dto.CreateUser
 
 		if err := c.ShouldBindJSON(&dto); err != nil {
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		if err := otp.Verify(dto.Email, dto.Otp); err != nil {
 			c.JSON(400, gin.H{"error": err.Error()})
 			return
 		}
