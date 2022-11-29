@@ -1,7 +1,10 @@
 package api
 
 import (
+	"fmt"
+
 	"github.com/Marcel-MD/cs-labs/api/dto"
+	"github.com/Marcel-MD/cs-labs/api/mfa"
 	"github.com/Marcel-MD/cs-labs/api/middleware"
 	"github.com/Marcel-MD/cs-labs/classic/caesar"
 	"github.com/Marcel-MD/cs-labs/classic/playfair"
@@ -11,6 +14,8 @@ import (
 
 func ListenAndServe() error {
 	s := NewUserService()
+	otp := mfa.NewOtpService()
+	es := mfa.NewMailService()
 	e := gin.Default()
 	g := e.Group("/api")
 
@@ -34,6 +39,26 @@ func ListenAndServe() error {
 		}
 
 		c.JSON(200, user)
+	})
+
+	g.POST("/dto/:email", func(c *gin.Context) {
+		email := c.Param("email")
+
+		pass, err := otp.Generate(email)
+		if err != nil {
+			c.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+
+		mail := mfa.Mail{
+			To:      []string{email},
+			Subject: "Verification Code",
+			Body:    fmt.Sprintf("Your verification code is <strong>%s</strong>.", pass),
+		}
+
+		go es.Send(mail)
+
+		c.JSON(200, gin.H{"message": "Verification code sent to your email."})
 	})
 
 	g.POST("/users/register", func(c *gin.Context) {
