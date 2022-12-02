@@ -2,6 +2,7 @@ package token
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
@@ -9,9 +10,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const secret = "SecretSecretSecretSecret"
-
 func Generate(email, role string) (string, error) {
+
+	secret := os.Getenv("SECRET")
 
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
@@ -29,6 +30,8 @@ func Generate(email, role string) (string, error) {
 }
 
 func ExtractEmailRole(c *gin.Context) (string, string, error) {
+
+	secret := os.Getenv("SECRET")
 
 	tokenString := extract(c)
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {

@@ -44,7 +44,7 @@ func ListenAndServe() error {
 		c.JSON(200, user)
 	})
 
-	g.POST("/dto/:email", func(c *gin.Context) {
+	g.POST("/otp/:email", func(c *gin.Context) {
 		email := c.Param("email")
 
 		pass, err := otp.Generate(email)
